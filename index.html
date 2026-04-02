@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Padstow Estuary Change Viewer</title>
+  <title>Padstow Estuary Survey Viewer</title>
   <style>
     :root {
-      --bg: #0b1220;
-      --panel: rgba(17, 24, 39, 0.88);
-      --panel-2: rgba(255, 255, 255, 0.04);
+      --bg: #08101c;
+      --panel: rgba(12, 20, 34, 0.92);
+      --panel-soft: rgba(255, 255, 255, 0.04);
       --border: rgba(255, 255, 255, 0.08);
-      --text: #e5eefc;
-      --muted: #9db0cf;
+      --text: #e8eef8;
+      --muted: #a5b4cf;
       --accent: #60a5fa;
-      --accent-2: #1d4ed8;
-      --success: #22c55e;
-      --shadow: 0 16px 40px rgba(0,0,0,0.35);
+      --accent-soft: rgba(96, 165, 250, 0.16);
+      --success: #bfead0;
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
       --radius: 18px;
     }
 
@@ -24,45 +24,50 @@
     html, body {
       margin: 0;
       min-height: 100%;
-      background: linear-gradient(180deg, #09101c 0%, #0b1220 100%);
+      background: linear-gradient(180deg, #07101a 0%, #0a1322 100%);
       color: var(--text);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     .app {
+      min-height: 100vh;
       display: grid;
       grid-template-rows: auto auto 1fr auto;
-      min-height: 100vh;
       gap: 12px;
       padding: 14px;
     }
 
-    .header, .topbar, .panel, .map-card, .footer-note {
+    .header,
+    .topbar,
+    .panel,
+    .map-card,
+    .footer-note {
       background: var(--panel);
-      backdrop-filter: blur(10px);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
     }
 
     .header {
       display: grid;
-      grid-template-columns: 1.5fr 1fr;
+      grid-template-columns: 1.4fr 1fr;
       gap: 12px;
       padding: 18px 20px;
     }
 
     .title h1 {
       margin: 0;
-      font-size: clamp(1.35rem, 2vw, 2rem);
-      line-height: 1.1;
+      font-size: clamp(1.5rem, 2.2vw, 2.15rem);
+      line-height: 1.08;
     }
 
     .title p {
-      margin: 8px 0 0;
+      margin: 10px 0 0;
       color: var(--muted);
       max-width: 860px;
-      line-height: 1.45;
+      line-height: 1.5;
+      font-size: 0.98rem;
     }
 
     .survey-summary {
@@ -72,14 +77,14 @@
     }
 
     .summary-card {
-      background: var(--panel-2);
+      background: var(--panel-soft);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 12px;
     }
 
     .summary-card .label {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--muted);
       margin-bottom: 6px;
       text-transform: uppercase;
@@ -94,17 +99,17 @@
 
     .topbar {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
       padding: 12px 16px;
     }
 
     .status-row {
       display: flex;
-      flex-wrap: wrap;
       gap: 10px;
+      flex-wrap: wrap;
       align-items: center;
     }
 
@@ -120,12 +125,13 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 340px 1fr 320px;
       gap: 12px;
       min-height: 0;
     }
 
-    .sidebar {
+    .sidebar,
+    .rightbar {
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -145,24 +151,24 @@
 
     .panel h3 {
       margin: 16px 0 10px;
-      font-size: 0.9rem;
+      font-size: 0.84rem;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
-    .panel p.help,
+    .panel p,
     .small,
-    .legend p,
-    .footer-note {
+    .footer-note,
+    .legend-item {
       color: var(--muted);
-      font-size: 0.9rem;
-      line-height: 1.45;
+      line-height: 1.48;
+      font-size: 0.92rem;
     }
 
     .control,
     .toggle-row,
-    .legend {
+    .legend-list {
       display: grid;
       gap: 10px;
     }
@@ -205,12 +211,6 @@
       transform: translateY(-1px);
       background: rgba(96,165,250,0.12);
       border-color: rgba(96,165,250,0.4);
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
     }
 
     .toggle-row {
@@ -275,20 +275,39 @@
     }
 
     .map-card {
-      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr;
       min-height: 720px;
       overflow: hidden;
-      display: grid;
-      grid-template-rows: 1fr;
+    }
+
+    .map-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .map-head h2 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+    }
+
+    .map-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
     }
 
     .map-stage {
       position: relative;
-      width: 100%;
-      height: 100%;
       background: #09101c;
+      min-height: 0;
       overflow: hidden;
-      transform-origin: center center;
     }
 
     .map-layer {
@@ -300,63 +319,32 @@
       transition: opacity 0.2s ease, background-image 0.2s ease;
     }
 
-    .floating {
-      position: absolute;
-      z-index: 3;
-      display: grid;
+    .legend-list {
+      gap: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: flex-start;
       gap: 10px;
-      max-width: 320px;
     }
 
-    .floating.top-left { top: 14px; left: 14px; }
-    .floating.top-right { top: 14px; right: 14px; }
-    .floating.bottom-left { left: 14px; bottom: 14px; }
-
-    .mini-card {
-      background: rgba(10,15,25,0.78);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 12px 14px;
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
-    }
-
-    .mini-card h4 {
-      margin: 0 0 8px;
-      font-size: 0.92rem;
-    }
-
-    .mini-card p,
-    .mini-card li {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.88rem;
-      line-height: 1.45;
-    }
-
-    .mini-card ul {
-      margin: 0;
-      padding-left: 18px;
-    }
-
-    .legend-swatch {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 6px;
-    }
-
-    .legend-swatch span.dot {
+    .legend-dot {
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      display: inline-block;
-      background: #ff0050;
-      box-shadow: 0 0 12px rgba(255,0,80,0.55);
+      margin-top: 4px;
+      flex: 0 0 auto;
     }
+
+    .legend-dot.image { background: #8ea9c7; }
+    .legend-dot.height { background: #49a5ff; }
+    .legend-dot.contour { background: #ff2b65; }
+    .legend-dot.change { background: #ff0050; box-shadow: 0 0 12px rgba(255,0,80,0.55); }
 
     .footer-note {
       padding: 14px 16px;
+      font-size: 0.9rem;
     }
 
     .value-inline {
@@ -365,38 +353,52 @@
     }
 
     .status-ok {
-      color: #c7f9d4;
+      color: var(--success);
+    }
+
+    @media (max-width: 1380px) {
+      .layout {
+        grid-template-columns: 320px 1fr;
+      }
+
+      .rightbar {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     @media (max-width: 1200px) {
-      .header { grid-template-columns: 1fr; }
-      .survey-summary { grid-template-columns: repeat(3, minmax(0,1fr)); }
-      .layout { grid-template-columns: 1fr; }
-      .sidebar { order: 2; }
-      .map-card { min-height: 560px; }
+      .header {
+        grid-template-columns: 1fr;
+      }
+
+      .survey-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar,
+      .rightbar {
+        display: flex;
+      }
+
+      .map-card {
+        min-height: 560px;
+      }
     }
 
     @media (max-width: 760px) {
-      .app { padding: 10px; }
+      .app {
+        padding: 10px;
+      }
+
       .survey-summary,
-      .grid-2,
-      .toggle-row { grid-template-columns: 1fr; }
-
-      .floating {
-        position: static;
-        max-width: none;
-        padding: 10px;
-      }
-
-      .map-stage {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px;
-      }
-
-      .map-layer {
-        inset: 10px;
+      .toggle-row {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -405,31 +407,31 @@
   <div class="app">
     <section class="header">
       <div class="title">
-        <h1>Padstow Estuary Change Viewer</h1>
-        <p id="headerSubtitle">Area 8 preview using the orthomosaic, colour height map, and contour export from the first survey.</p>
+        <h1>Padstow Estuary Survey Viewer</h1>
+        <p id="headerSubtitle">Area 8 - Wadebridge preview showing the survey image, surface height colours, and contour lines from the first survey.</p>
       </div>
 
       <div class="survey-summary">
         <div class="summary-card">
-          <div class="label">Monitoring area</div>
-          <div class="value" id="summaryArea">Area 8</div>
+          <div class="label">Selected area</div>
+          <div class="value" id="summaryArea">Area 8 - Wadebridge</div>
         </div>
         <div class="summary-card">
-          <div class="label">Survey state</div>
+          <div class="label">Survey status</div>
           <div class="value status-ok">Survey 1 loaded</div>
         </div>
         <div class="summary-card">
           <div class="label">Next step</div>
-          <div class="value">Add Survey 2 for change comparison</div>
+          <div class="value">Add Survey 2 for direct comparison</div>
         </div>
       </div>
     </section>
 
     <section class="topbar">
       <div class="status-row">
-        <div class="pill">Current view: <strong id="statusArea">Area 8</strong></div>
+        <div class="pill">Current view: <strong id="statusArea">Area 8 - Wadebridge</strong></div>
         <div class="pill">Mode: <strong>Single-survey preview</strong></div>
-        <div class="pill">Loaded layers: <strong>Ortho · Height colour · Contours</strong></div>
+        <div class="pill">Loaded layers: <strong>Survey image · Height colours · Contours</strong></div>
       </div>
 
       <div class="status-row">
@@ -443,19 +445,19 @@
           <h2>Monitoring Area</h2>
 
           <div class="control">
-            <label for="areaSelect">Select area</label>
+            <label for="areaSelect">Choose an area</label>
             <select id="areaSelect"></select>
           </div>
 
-          <p class="help">All areas run through the same viewer. Each area loads its own orthomosaic, colour height map, and contour overlay automatically.</p>
+          <p>All areas run through the same viewer. Each area loads its own survey image, height colours, and contour lines automatically.</p>
         </div>
 
         <div class="panel">
-          <h2>Base Layers</h2>
+          <h2>Layers</h2>
 
           <div class="toggle-row">
             <div class="toggle-chip">
-              <span>Orthomosaic</span>
+              <span>Survey image</span>
               <label class="switch">
                 <input type="checkbox" id="toggleOrtho" checked />
                 <span class="slider"></span>
@@ -463,7 +465,7 @@
             </div>
 
             <div class="toggle-chip">
-              <span>DSM colour layer</span>
+              <span>Height colours</span>
               <label class="switch">
                 <input type="checkbox" id="toggleDSM" checked />
                 <span class="slider"></span>
@@ -479,7 +481,7 @@
             </div>
 
             <div class="toggle-chip">
-              <span>Change overlay</span>
+              <span>Change highlight</span>
               <label class="switch">
                 <input type="checkbox" id="toggleChange" />
                 <span class="slider"></span>
@@ -487,87 +489,86 @@
             </div>
           </div>
 
-          <h3>DSM opacity</h3>
+          <h3>Height colour strength</h3>
           <div class="control">
             <input type="range" id="dsmOpacity" min="0" max="100" value="45" />
-            <div class="small">Adjust how strongly the coloured height layer sits over the orthomosaic.</div>
+            <div class="small">Adjust how strongly the height colours sit over the survey image.</div>
           </div>
 
-          <h3>Contour opacity</h3>
+          <h3>Contour line strength</h3>
           <div class="control">
             <input type="range" id="contourOpacity" min="0" max="100" value="78" />
             <div class="small">Use this to soften or strengthen the contour overlay.</div>
           </div>
         </div>
-
-        <div class="panel">
-          <h2>Change Comparison</h2>
-          <p class="help">This section is being kept in place so the viewer is ready for date-to-date comparison once a second survey is added for each area.</p>
-
-          <div class="control">
-            <label for="threshold">Change sensitivity</label>
-            <input type="range" id="threshold" min="0" max="100" value="58" />
-            <div class="small">Currently inactive until Survey 2 is added.</div>
-          </div>
-
-          <div class="grid-2" style="margin-top:12px;">
-            <div class="control">
-              <label for="highlightColour">Highlight colour</label>
-              <input type="color" id="highlightColour" value="#ff0050" style="height:42px;border-radius:12px;border:1px solid var(--border);background:transparent;padding:4px;" />
-            </div>
-
-            <div class="control">
-              <label for="overlayStrength">Overlay strength</label>
-              <input type="range" id="overlayStrength" min="0" max="100" value="0" />
-            </div>
-          </div>
-        </div>
       </aside>
 
       <main class="map-card">
+        <div class="map-head">
+          <div>
+            <h2 id="mapTitle">Area 8 - Wadebridge</h2>
+            <p id="mapIntro">This view shows the survey image, surface height colours, and contour lines for the selected area.</p>
+          </div>
+          <div class="small">Survey 1 view</div>
+        </div>
+
         <div class="map-stage" id="mapStage">
           <div class="map-layer" id="orthoLayer"></div>
           <div class="map-layer" id="dsmLayer"></div>
           <div class="map-layer" id="contourLayer"></div>
           <div class="map-layer" id="changeLayer"></div>
+        </div>
+      </main>
 
-          <div class="floating top-left">
-            <div class="mini-card">
-              <h4>Current view</h4>
-              <p id="currentViewText">This Area 8 viewer currently displays the orthomosaic, coloured height surface, and contour map for a single survey.</p>
+      <aside class="rightbar">
+        <div class="panel">
+          <h2>What you are looking at</h2>
+          <p id="currentViewText">This Area 8 - Wadebridge view currently displays the survey image, height colours, and contour lines from a single survey.</p>
+        </div>
+
+        <div class="panel">
+          <h2>Legend</h2>
+          <div class="legend-list">
+            <div class="legend-item">
+              <span class="legend-dot image"></span>
+              <div>Survey image base layer</div>
             </div>
-          </div>
-
-          <div class="floating top-right">
-            <div class="mini-card">
-              <h4>Coming next</h4>
-              <p>Once a second survey is added, this viewer will support direct change comparison between survey dates for the selected area.</p>
+            <div class="legend-item">
+              <span class="legend-dot height"></span>
+              <div>Surface height colours</div>
             </div>
-
-            <div class="mini-card legend">
-              <h4>Legend</h4>
-              <p>Orthomosaic base</p>
-              <p>Colour height layer</p>
-              <p>Contour lines</p>
-              <div class="legend-swatch">
-                <span class="dot" id="legendDot"></span>
-                <span>Change highlight (available when Survey 2 is added)</span>
-              </div>
+            <div class="legend-item">
+              <span class="legend-dot contour"></span>
+              <div>Contour lines</div>
             </div>
-          </div>
-
-          <div class="floating bottom-left">
-            <div class="mini-card">
-              <h4>Loaded for current area</h4>
-              <ul>
-                <li>Orthomosaic</li>
-                <li>Colour height map</li>
-                <li>Contour overlay</li>
-              </ul>
+            <div class="legend-item">
+              <span class="legend-dot change" id="legendDot"></span>
+              <div>Change highlight - ready for future survey comparison</div>
             </div>
           </div>
         </div>
-      </main>
+
+        <div class="panel">
+          <h2>Future comparison</h2>
+          <p>Once a second survey is added, this viewer will support direct comparison between survey dates for the selected area.</p>
+
+          <h3>Change sensitivity</h3>
+          <div class="control">
+            <input type="range" id="threshold" min="0" max="100" value="58" />
+            <div class="small">This is being kept in place ready for the next survey.</div>
+          </div>
+
+          <div class="control" style="margin-top: 12px;">
+            <label for="highlightColour">Highlight colour</label>
+            <input type="color" id="highlightColour" value="#ff0050" style="height:42px;border-radius:12px;border:1px solid var(--border);background:transparent;padding:4px;" />
+          </div>
+
+          <h3>Highlight strength</h3>
+          <div class="control">
+            <input type="range" id="overlayStrength" min="0" max="100" value="0" />
+          </div>
+        </div>
+      </aside>
     </section>
 
     <section class="footer-note">
@@ -578,22 +579,56 @@
   <script>
     const AREA_KEYS = ["area1", "area2", "area3", "area4", "area5", "area6", "area7", "area8"];
 
-    const areaConfigs = Object.fromEntries(
-      AREA_KEYS.map((key, index) => {
-        const n = index + 1;
-        return [
-          key,
-          {
-            key,
-            label: `Area ${n}`,
-            folder: key,
-            ortho: `${key}/ortho.jpg`,
-            dsm: `${key}/dsm.png`,
-            contours: `${key}/contour.png`
-          }
-        ];
-      })
-    );
+    const areaConfigs = {
+      area1: {
+        label: "Area 1 - Hawker's Cove / Tregirls Beach",
+        ortho: "area1/ortho.jpg",
+        dsm: "area1/dsm.png",
+        contours: "area1/contour.png"
+      },
+      area2: {
+        label: "Area 2 - Daymer Bay",
+        ortho: "area2/ortho.jpg",
+        dsm: "area2/dsm.png",
+        contours: "area2/contour.png"
+      },
+      area3: {
+        label: "Area 3 - Rock Beach",
+        ortho: "area3/ortho.jpg",
+        dsm: "area3/dsm.png",
+        contours: "area3/contour.png"
+      },
+      area4: {
+        label: "Area 4 - Padstow Harbour Estuary",
+        ortho: "area4/ortho.jpg",
+        dsm: "area4/dsm.png",
+        contours: "area4/contour.png"
+      },
+      area5: {
+        label: "Area 5 - Porthilly Cove",
+        ortho: "area5/ortho.jpg",
+        dsm: "area5/dsm.png",
+        contours: "area5/contour.png"
+      },
+      area6: {
+        label: "Area 6 - Old Town Cove",
+        ortho: "area6/ortho.jpg",
+        dsm: "area6/dsm.png",
+        contours: "area6/contour.png"
+      },
+      area7: {
+        label: "Area 7 - Slate Quarry",
+        ortho: "area7/ortho.jpg",
+        dsm: "area7/dsm.png",
+        contours: "area7/contour.png"
+      },
+      area8: {
+        label: "Area 8 - Wadebridge",
+        ortho: "area8/ortho.jpg",
+        dsm: "area8/dsm.png",
+        contours: "area8/contour.png"
+      }
+    };
 
     const DEFAULT_AREA = "area8";
 
@@ -626,7 +661,9 @@
       summaryArea: document.getElementById("summaryArea"),
       statusArea: document.getElementById("statusArea"),
       headerSubtitle: document.getElementById("headerSubtitle"),
-      currentViewText: document.getElementById("currentViewText")
+      currentViewText: document.getElementById("currentViewText"),
+      mapTitle: document.getElementById("mapTitle"),
+      mapIntro: document.getElementById("mapIntro")
     };
 
     function getUrlParams() {
@@ -695,8 +732,10 @@
 
       els.summaryArea.textContent = config.label;
       els.statusArea.textContent = config.label;
-      els.headerSubtitle.textContent = `${config.label} preview using the orthomosaic, colour height map, and contour export from the first survey.`;
-      els.currentViewText.textContent = `This ${config.label} viewer currently displays the orthomosaic, coloured height surface, and contour map for a single survey.`;
+      els.headerSubtitle.textContent = `${config.label} preview showing the survey image, surface height colours, and contour lines from the first survey.`;
+      els.currentViewText.textContent = `This ${config.label} view currently displays the survey image, height colours, and contour lines from a single survey.`;
+      els.mapTitle.textContent = config.label;
+      els.mapIntro.textContent = `This view shows the survey image, surface height colours, and contour lines for ${config.label}.`;
 
       updateUrl();
     }
