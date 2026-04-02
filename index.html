@@ -571,7 +571,7 @@
     </section>
 
     <section class="footer-note">
-      This viewer expects each area folder to contain <span class="value-inline">ortho.jpg</span>, <span class="value-inline">dsm.png</span>, and <span class="value-inline">contour.png</span> inside <span class="value-inline">assets/area1</span> to <span class="value-inline">assets/area8</span>.
+      This viewer expects each area folder at the site root to contain <span class="value-inline">ortho.jpg</span>, <span class="value-inline">dsm.png</span>, and <span class="value-inline">contour.png</span> inside <span class="value-inline">area1</span> to <span class="value-inline">area8</span>.
     </section>
   </div>
 
@@ -586,10 +586,10 @@
           {
             key,
             label: `Area ${n}`,
-            folder: `assets/${key}`,
-            ortho: `assets/${key}/ortho.jpg`,
-            dsm: `assets/${key}/dsm.png`,
-            contours: `assets/${key}/contour.png`
+            folder: key,
+            ortho: `${key}/ortho.jpg`,
+            dsm: `${key}/dsm.png`,
+            contours: `${key}/contour.png`
           }
         ];
       })
